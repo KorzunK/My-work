@@ -14,79 +14,108 @@ namespace Curse_Work
         public Main()
         {
             InitializeComponent();
- 
-            DataGridViewTextBoxColumn firstColumn =
-                new DataGridViewTextBoxColumn();
-
-            DataGridViewTextBoxColumn secondColumn =
-                new DataGridViewTextBoxColumn();
-
-            DataGridViewTextBoxColumn thirdColumn =
-                new DataGridViewTextBoxColumn();
-
-            DataGridViewTextBoxColumn fourthColumn =
-                new DataGridViewTextBoxColumn();
-           
-            DataGridViewTextBoxColumn fifthColumn =
-                new DataGridViewTextBoxColumn();
-
-            DataGridViewTextBoxColumn sixColumn =
-                new DataGridViewTextBoxColumn();
-
-            DataGridViewTextBoxColumn seventhColumn =
-                new DataGridViewTextBoxColumn();
-
-            DataGridViewTextBoxColumn eightColumn =
-                new DataGridViewTextBoxColumn();
-
-
-            dataGridView.Columns.Add("Name", "Name");
-            dataGridView.Columns.Add("Genre", "Genre");
-            dataGridView.Columns.Add("Release date", "Release date");
-            dataGridView.Columns.Add("Director", "Director");
-            dataGridView.Columns.Add("Company", "Company");
-            dataGridView.Columns.Add("Duration", "Duration");
-            dataGridView.Columns.Add("Format", "Format");
-            dataGridView.Columns.Add("Quality", "Quality");
-            
-
-            DataGridViewCell firstCell =
-                new DataGridViewTextBoxCell();
-
-            DataGridViewCell secondCell =
-                new DataGridViewTextBoxCell();
-
-            DataGridViewCell thirdCell =
-                new DataGridViewTextBoxCell();
-
-            DataGridViewCell fourthCell =
-                new DataGridViewTextBoxCell();
-
-            DataGridViewCell fifthCell =
-                new DataGridViewTextBoxCell();
-
-            DataGridViewTextBoxCell sixCell =
-                new DataGridViewTextBoxCell();
-
-            DataGridViewTextBoxCell seventhCell =
-                new DataGridViewTextBoxCell();
-
-            DataGridViewTextBoxCell eightCell =
-                new DataGridViewTextBoxCell();
-
-
-            DataGridViewRow row = new DataGridViewRow();
-            row.Cells.AddRange(firstCell, secondCell, thirdCell, fourthCell, fifthCell, sixCell, seventhCell, eightCell);
-            this.dataGridView.Rows.Add(row);
-            
-            firstCell = new DataGridViewTextBoxCell();
-            secondCell = new DataGridViewTextBoxCell();
-            thirdCell = new DataGridViewTextBoxCell();
-            fourthCell = new DataGridViewTextBoxCell();
-            fifthCell = new DataGridViewTextBoxCell();
-            sixCell = new DataGridViewTextBoxCell();
-            seventhCell = new DataGridViewTextBoxCell();
-            eightCell = new DataGridViewTextBoxCell();
         }
     }
+    
+    private void delete_button_Click(object sender, EventArgs e)
+        {
+            int index = FilmGridView.CurrentRow.Index;
+            FilmGridView.Rows.RemoveAt(index);
+            string[] data = new string[FilmGridView.Rows.Count];
+        }
+
+        private void close_button_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Stream myStream;
+
+            saveFile.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            saveFile.FilterIndex = 2;
+            saveFile.RestoreDirectory = true;
+
+            if (saveFile.ShowDialog() == DialogResult.OK)
+            {
+                if ((myStream = saveFile.OpenFile()) != null)
+                {
+                    StreamWriter myWritet = new StreamWriter(myStream);
+                    try
+                    {
+                        for (int i = 0; i < FilmGridView.RowCount - 1; i++)
+                        {
+                            for (int j = 0; j < FilmGridView.ColumnCount - 1; j++)
+                            {
+                                myWritet.Write(FilmGridView.Rows[i].Cells[j].Value.ToString() + " ");
+                            }
+                            myWritet.WriteLine();
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    finally
+                    {
+                        myWritet.Close();
+                    }
+
+                    myStream.Close();
+                }
+            }
+
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Stream myStream = null;
+            openFile.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            openFile.FilterIndex = 2;
+            openFile.RestoreDirectory = true;
+
+            if (openFile.ShowDialog() == DialogResult.OK)
+            {
+
+                if ((myStream = openFile.OpenFile()) != null)
+                {
+                    StreamReader myReader = new StreamReader(myStream);
+
+                    string[] str;
+                    int num = 0;
+                    try
+                    {
+                        string[] str1 = myReader.ReadToEnd().Split('\n');
+                        num = str1.Count();
+                        //while ((inpstr = myReader.ReadLine()) != null)
+                        //{
+                        //    str[num] = new string(inpstr.ToCharArray());
+                        //    num++;
+
+                        //}
+                        FilmGridView.RowCount = num;
+                        for (int i = 0; i < num; i++)
+                        {
+                            str = str1[i].Split(' ');
+                            for (int j = 0; j < FilmGridView.ColumnCount; j++)
+                            {
+                                FilmGridView.Rows[i].Cells[j].Value = str[j];
+
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    finally
+                    {
+                        myReader.Close();
+                    }
+                }
+
+            }
+        }
 }
