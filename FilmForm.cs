@@ -149,4 +149,26 @@ namespace CWork
         {
             LoadFile();
         }
+        
+        private void search_button_Click(object sender, EventArgs e)
+        {
+            if (Search_textBox.Text == String.Empty)
+            {
+                MessageBox.Show("Input something");
+            }
+
+            for (int i = 0; i < FilmGridView.RowCount; i++)
+            {
+                FilmGridView.Rows[i].Selected = false;
+                for (int j = 0; j < FilmGridView.ColumnCount; j++)
+                    if (FilmGridView.Rows[i].Cells[j].Value != null)
+
+                            if (FilmGridView.Rows[i].Cells[j].Value.ToString().Contains(Search_textBox.Text))
+                            {
+                                FilmGridView.Rows[i].Selected = true;
+                                break;
+                            }
+                        
+            }
+        }
     }
